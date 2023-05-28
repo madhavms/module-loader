@@ -1,0 +1,24 @@
+[
+    {
+      "url": "https://madhavms.github.io/widget-showcase/widgetRemote.js",
+      "widget": "./StockRiskWidget",
+      "scope": "finWidget",
+      "label": "Stock Risk",
+      "renderer": "react"
+    },
+    {
+      "url": "https://madhavms.github.io/widget-showcase/widgetRemote.js",
+      "widget": "./StockWidget",
+      "scope": "finWidget",
+      "label": "Stock Widget",
+      "renderer": "react"
+    },
+    {
+      "url": "https://madhavms.github.io/widget-showcase/widgetRemote.js",
+      "widget": "./NewsWidget",
+      "scope": "finWidget",
+      "label": "News Widget",
+      "renderer": "react"
+    }
+]
+  
