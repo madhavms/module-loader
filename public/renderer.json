@@ -1,0 +1,7 @@
+{
+    "react": {
+      "url": "https://madhavms.github.io/widget-showcase/widgetRemote.js",
+      "module": "./ReactRenderer",
+      "scope": "finWidget"
+    }
+}

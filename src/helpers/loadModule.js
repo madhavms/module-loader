@@ -8,11 +8,11 @@ const loadScript = (src) => {
   });
 };
 
-export const loadRemoteModule = (url, scope, widget) => async () => {
+export const loadRemoteModule = (url, scope, moduleName) => async () => {
   await loadScript(url);
   const container = window[scope];
   await container.init(__webpack_share_scopes__.default);
-  const factory = await container.get(widget);
+  const factory = await container.get(moduleName);
   const module = factory();
   return module;
 };

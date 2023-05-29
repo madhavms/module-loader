@@ -1,30 +1,41 @@
-import React, { useEffect, useState, Suspense } from "react";
+import React, { useEffect, useState, Suspense, useRef } from "react";
 import { loadRemoteModule } from "../helpers/loadModule";
 
 const WidgetSelector = () => {
     const [widgets, setWidgets] = useState([]);
-    const [Component, setComponent] = useState(null);
-  
+    const [renderers, setRenderers] = useState([]);
+    const widgetRoot = useRef(null);
+    
     useEffect(() => {
       const fetchWidgets = async () => {
         try {
-          const response = await fetch("/config.json"); 
-          const data = await response.json();
-          setWidgets(data);
+          const [widgetsResponse, renderersResponse] = await Promise.all([
+            fetch("/config.json"),
+            fetch("/renderer.json"),
+          ]);
+    
+          const widgetsData = await widgetsResponse.json();
+          const renderersData = await renderersResponse.json();
+    
+          setWidgets(widgetsData);
+          setRenderers(renderersData);
         } catch (error) {
-          console.error("Error fetching widgets:", error);
+          console.error("Error fetching data:", error);
         }
       };
-  
+    
       fetchWidgets();
     }, []);
-  
+
     const handleWidgetSelect = async (selectedWidget) => {
-      const { url, scope, widget } = selectedWidget;
-      const loadComponent = loadRemoteModule(url, scope, widget);
-      setComponent(React.lazy(loadComponent));
+      const { url, scope, widget, renderer } = selectedWidget;
+      const rendererConfig = renderers[renderer];
+      console.log(rendererConfig.url, rendererConfig.scope, rendererConfig.module);
+      const renderFn =  await loadRemoteModule(rendererConfig.url, rendererConfig.scope, rendererConfig.module)();
+      const loadedComponent =  loadRemoteModule(url, scope, widget);
+      renderFn.default(loadedComponent, widgetRoot.current)
     };
-  
+
     return (
       <div>
         <h2>Select Widget:</h2>
@@ -36,9 +47,7 @@ const WidgetSelector = () => {
             </option>
           ))}
         </select>
-        <Suspense fallback={<div>Loading...</div>}>
-          {Component && <Component />}
-        </Suspense>
+        <div id="widget-root" ref={widgetRoot}></div>
       </div>
     );
   };
